@@ -1,0 +1,95 @@
+body{
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 500;
+}
+.mdl-layout-title,.mdl-card__title-text,h1,h2,h3,h4,h5,h6{
+    font-family: 'Quicksand', sans-serif;
+}
+h1{
+    font-size: 48px;
+}
+
+.page-content-form{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.page-content-list{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.page-content-order{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+#file{
+    display: none;
+}
+
+.card-square.mdl-card {
+    width: 320px;
+    height: 320px;
+}
+.card-square > .mdl-card__title {
+    color: #fff;
+
+}
+.error{
+    color:#f00;
+}
+
+.page-content-item{
+    display: flex;
+    width:100%;
+    height: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.page-content-item > div{
+    margin: 10px;
+}
+
+.insert-transaction{
+    flex-direction: row;
+}
+.insert-transaction-form{
+    width: 20%;
+}
+div{
+    box-sizing: border-box;
+}
+.page-content-form.insert-transaction{
+    align-items: flex-start;
+}
+.card-event.mdl-card {
+    width: 256px;
+    height: 256px;
+    background-color: rgb(255, 200, 0);
+    color: #666666;
+    font-family: 'Quicksand', sans-serif;
+}
+.card-event > .mdl-card__actions {
+    border-color: rgba(0, 0, 0, 0.2);
+}
+.card-event > .mdl-card__title {
+    align-items: flex-start;
+}
+.card-event > .mdl-card__title > h4 {
+    margin-top: 0;
+}
+.card-event > .mdl-card__actions {
+    display: flex;
+    box-sizing:border-box;
+    align-items: center;
+}
+.card-event > .mdl-card__actions > .material-icons {
+    padding-right: 10px;
+}
+.card-event > .mdl-card__title,
+.card-event > .mdl-card__actions,
+.card-event > .mdl-card__actions > .mdl-button {
+    color: #000;
+}

@@ -1,0 +1,54 @@
+{{template  "header".}}
+<main class="mdl-layout__content">
+    <div class="page-content" id="content">
+        <div class="page-content-form">
+            <form action="/login/" method="post">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="username" name="username" v-model="username">
+                    <label class="mdl-textfield__label" for="username">username</label>
+                </div>
+                <br>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="password" id="password" name="password" v-model="password">
+                    <label class="mdl-textfield__label" for="password">Password</label>
+                </div>
+                <br>
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" @click="login($event)">
+                    Login
+                </button>
+            </form>
+            <br>
+            <div>
+                <span class="error"><%error%></span>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    (function () {
+        new Vue({
+            el:"#content",
+            delimiters:["<%","%>"],
+            data:{
+                "username":{{.username}},
+                "password":{{.password}},
+                "error":{{.error}}
+            },
+            methods:{
+                login(e){
+                    this.error = ""
+                    if(this.username.trim().length ==0)
+                        this.error= "username must be filled";
+                    else if(this.password.trim().length ==0)
+                        this.error = "password must be filled";
+                    if(this.error.trim().length !=0)
+                        e.preventDefault();
+                }
+            }
+
+        });
+    }())
+</script>
+
+{{template "footer".}}

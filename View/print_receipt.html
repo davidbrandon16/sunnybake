@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css?family=Quicksand:500" rel="stylesheet">
+    <script src="/asset/js/vue.js"></script>
+    <link rel="stylesheet" href="/asset/css/style_print.css">
+    <title>Sunny Bake</title>
+</head>
+<body>
+<div id="content">
+    <div class="header-receipt">
+        Sunny Bake
+    </div>
+    <div class="content-receipt">
+        <div class="content-receipt-header">
+            <table>
+                <tr>
+                    <td>Name</td>
+                    <td>:</td>
+                    <td><%transactionHeader.CustomerName%></td>
+                </tr>
+                <tr>
+                    <td>Address</td>
+                    <td>:</td>
+                    <td><%transactionHeader.CustomerAddress%></td>
+                </tr>
+            </table>
+        </div>
+        <div class="content-receipt-content">
+            <div class="content-receipt-content-row header">
+                <div class="name">Name</div>
+                <div class="price">Price</div>
+                <div class="qty center">Qty</div>
+                <div class="subtotal right">Sub Total</div>
+            </div>
+            <div class="content-receipt-content-row" v-for="transaction in transactions">
+                <div class="name">
+                    <%transaction.product.Name%>
+
+                </div>
+                <div class="footer-price price">
+                    <div class="currency">
+                        Rp.
+                    </div>
+                    <div class="price">
+                        <%formatPrice(transaction.product.Price)%>
+                    </div>
+
+                </div>
+                <div class="qty right">
+                    <%transaction.transactionDetail.Qty%> pc(s)
+
+                </div>
+                <div class="subtotal right footer-price">
+                    <div class="currency">
+                        Rp.
+                    </div>
+                    <div class="price">
+                        <% formatPrice(parseInt(transaction.transactionDetail.Qty) * parseInt(transaction.product.Price))%>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content-receipt-footer">
+        <div class="content-receipt-content-row">
+            <div>
+                Sub Price
+            </div>
+            <div class="footer-price">
+                <div class="currency">Rp.</div>
+                <div class="price"><%formatPrice(transactionHeader.Price)%></div>
+            </div>
+        </div>
+        <div class="content-receipt-content-row">
+            <div>
+                Discount
+            </div>
+            <div class="footer-price">
+                <div class="currency">
+                    Rp.
+                </div>
+                <div class="price">
+                    {{/*<span style="font-size: 20px;line-height: 16px;">-</span>*/}}<%formatPrice(transactionHeader.Discount)%>
+                </div>
+
+            </div>
+        </div>
+        <div class="content-receipt-content-row">
+            <div>
+                Delivery Price
+            </div>
+            <div class="footer-price right">
+                <div class="currency">
+                    Rp.
+                </div>
+                <div class="price">
+                    <%formatPrice(transactionHeader.DeliveryCost)%>
+                </div>
+
+            </div>
+        </div>
+        <div class="content-receipt-content-row">
+            <div>
+                Total Price
+            </div>
+            <div class="footer-price right">
+                <div class="currency">
+                    Rp.
+                </div>
+                <div class="price">
+                    <%formatPrice(parseInt(transactionHeader.Price) - parseInt(transactionHeader.Discount)+
+                    parseInt(transactionHeader.DeliveryCost))%>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<button onclick="window.print()">
+    Print
+</button>
+</body>
+<script>
+    (function () {
+        new Vue({
+            el: "#content",
+            delimiters: ["<%", "%>"],
+            data: {
+                "transactionHeader":{{.transactionHeader}},
+                "transactions":{{.transactions}}
+            },
+            methods: {
+                formatPrice(value) {
+                    let val = (value / 1).toString().replace('.', ',')
+                    return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                }
+            }
+        });
+    }())
+</script>
+
+</html>

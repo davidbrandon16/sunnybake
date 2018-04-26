@@ -1,0 +1,22 @@
+{{template "header".}}
+<main class="mdl-layout__content" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml"
+      xmlns:v-for="http://www.w3.org/1999/xhtml">
+    <div class="page-content">
+        <div class="page-content-form">
+            <form action="">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="start_date" name="start_date">
+                    <label class="mdl-textfield__label" for="start_date">Start Date</label>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" name="end_date">
+                    <input class="mdl-textfield__input" type="text" id="end_date">
+                    <label class="mdl-textfield__label" for="end_date">End Date</label>
+                </div>
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                    Export
+                </button>
+            </form>
+        </div>
+    </div>
+</main>
+{{template "footer".}}

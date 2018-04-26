@@ -1,0 +1,109 @@
+{{ template "header" .}}
+
+<main class="mdl-layout__content" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml"
+      xmlns:v-for="http://www.w3.org/1999/xhtml">
+    <div class="page-content">
+        <div class="page-content-item" id="item">
+            <div class="card-event mdl-card mdl-shadow--2dp mdl-button--accent">
+                <div class="mdl-card__title mdl-card--expand">
+                    <h4>
+                        <% transactionHeader.CustomerName %><br>
+                        <% transactionHeader.OrderDate %><br>
+                        Rp <% transactionHeader.Price - transactionHeader.Discount +
+                        parseInt(transactionHeader.DeliveryCost) %> <br>
+                        Address <% transactionHeader.CustomerAddress %>
+                    </h4>
+                </div>
+            </div>
+        </div>
+        <div class="page-content-form" id="form">
+            <form v-bind:action="'/transaction/changePayment/'+transactionHeader.Id" method="post">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="Bank" name="bank" v-model="bank">
+                    <label class="mdl-textfield__label" for="Bank">Bank Name</label>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="accountName" name="accountName" v-model="name">
+                    <label class="mdl-textfield__label" for="accountName">Account Name</label>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="accountNumber" name="accountNumber"
+                           v-model="number">
+                    <label class="mdl-textfield__label" for="accountNumber">Account Number</label>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="price" name="price" v-model="price">
+                    <label class="mdl-textfield__label" for="price">Price Rp.</label>
+                </div>
+                <br>
+                <div class="mdl-textfield mdl-js-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input type="text" name="date" id="date" class="mdl-textfield__input" v-model="date">
+                    <label for="date" class="mdl-textfield__label"> Payment Date </label>
+                </div>
+                <br>
+                <button @click="submit($event)" type="submit"
+                       class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+                       >
+                    Submit
+                </button>
+            </form>
+            <span class="error">
+            <% error %>
+            </span>
+        </div>
+
+    </div>
+</main>
+
+<script>
+    (function () {
+        new Vue({
+            el: "#item",
+            delimiters: ["<%", "%>"],
+            data: {
+                "transactionHeader":{{.transactionHeader}},
+            },
+
+        });
+
+        var vm = new Vue({
+            el:"#form",
+            delimiters:["<%","%>"],
+            data:{
+                "transactionHeader":{{.transactionHeader}},
+                "error":"",
+                "bank":"",
+                "name":"",
+                "number":"",
+                "price":"",
+                "date":"",
+            },
+            methods : {
+                submit(e){
+                    this.error ="";
+                    if(this.bank.trim().length ==0){
+                        this.error = "Bank name must be filled";
+                    }else if(this.name.trim().length ==0){
+                        this.error = "Account name must be filled";
+                    }else if(this.number.trim().length ==0){
+                        this.error = "Account number must be filled";
+                    }else if(isNaN(this.price) || this.price.trim().length ==0 ){
+                        this.error = "Price must be filled with number";
+                    }else if(date.trim().length =0){
+                        this.error = "Date Must Be filled";
+                    }
+                    if(this.error.trim().length!= 0){
+                        e.preventDefault();
+                    }
+                }
+            }
+        });
+        $("#date").datepicker({
+            onSelect: function () {
+                this.parentElement.MaterialTextfield.change(this.value);
+                vm.date = this.value
+            }
+        });
+    }())
+</script>
+{{ template "footer" .}}

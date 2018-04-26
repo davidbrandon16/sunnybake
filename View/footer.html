@@ -1,0 +1,33 @@
+{{define "footer"}}
+</div>
+</body>
+<script>
+    (function () {
+        new Vue({
+            el:"#header",
+            delimiters:["<%","%>"],
+            data:{
+                "isLogin":false,
+            },
+            created:function(){
+                    axios.get("/user").then((response)=>{
+                        this.isLogin= (response.data.user == "admin") ? true:false;
+                    });
+            }
+        });
+        new Vue({
+            el:"#headerSide",
+            delimiters:["<%","%>"],
+            data:{
+                "isLogin":false,
+            },
+            created:function(){
+                axios.get("/user").then((response)=>{
+                    this.isLogin= (response.data.user == "admin") ? true:false;
+                });
+            }
+        });
+    }())
+</script>
+</html>
+{{end}}

@@ -1,0 +1,35 @@
+{{template "header" .}}
+<main class="mdl-layout__content" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+    <div class="page-content">
+        <div class="page-content-item" id="item-card" >
+            <div class="card-square mdl-card mdl-shadow--2dp" v-for="item in items">
+                <div class="mdl-card__title mdl-card--expand" v-bind:style="{backgroundImage:'url(/asset/images/'+item.Url+')', backgroundSize:'cover'}" >
+                    <h2 class="mdl-card__title-text" > <% item.Name %></h2>
+                </div>
+                <div class="mdl-card__supporting-text">
+                    Price : Rp <% item.Price %>
+                    <br>
+                    <% item.Description %>
+                </div>
+                <div class="mdl-card__actions mdl-card--border">
+                    <a class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
+                        View Updates
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    (function () {
+        new Vue({
+            el:"#item-card",
+            delimiters:["<%","%>"],
+            data:{
+                "items" : {{ .items }}
+            }
+        });
+    })()
+</script>
+{{template "footer" .}}

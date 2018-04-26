@@ -1,0 +1,101 @@
+body{
+    width: 100%;
+    height: 100%;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 500;
+}
+
+html{
+    width: 100%;
+    height: 100%;
+}
+div{
+    box-sizing: border-box;
+}
+#content{
+    width: 30%;
+    border: solid 1px #ccc;
+    min-width: 405px;
+}
+.header-receipt{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    border-bottom: solid 1px #ccc;
+    padding: 15px;
+    font-size: 20px;
+}
+.content-receipt-header{
+    border-bottom: solid 1px #ccc;
+    padding: 10px;
+    font-size: 14px;
+}
+.content-receipt-content{
+    width: 100%;
+    padding: 10px;
+}
+.content-receipt-content-row{
+    margin-bottom: 10px;
+    display: flex;
+    width: 100%;
+    font-size: 14px;
+}
+.name{
+    flex: 2;
+}
+.price,.qty,.subtotal{
+    flex: 1;
+}
+.content-receipt-content-row.header{
+    padding: 0;
+    font-size: 12px;
+}
+.content-receipt-content-row >div{
+    width: 100%;
+}
+.content-receipt-content-row .right{
+    display: flex;
+    justify-content: flex-end;
+}
+.content-receipt-footer{
+    border-top: solid 1px #ccc;
+    padding: 10px;
+}
+
+.content-receipt-footer .content-receipt-content-row{
+    padding: 0;
+    margin-bottom: 5px;
+}
+.footer-price.price{
+    text-align: left;
+}
+.footer-price{
+    width: 160px !important;
+    display: flex;
+    text-align: right;
+}
+.footer-price .currency{
+    width: 40px;
+}
+.footer-price .price{
+    width: 100%;
+    flex: 1;
+}
+.footer-price div{
+    width: 100%;
+}
+.center{
+    text-align: center;
+}
+@media print {
+    button{
+        display: none;
+    }
+    html,body{
+        width: 30%;
+        min-width: 405px;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden;
+    }
+}

@@ -1,0 +1,76 @@
+{{template "header" .}}
+<main class="mdl-layout__content">
+    <div class="page-content">
+        <div class="page-content-form" id="form">
+            <h1>Insert Product</h1>
+            <form action="/product/insert"  method="post" enctype="multipart/form-data">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input v-model="name" type="text" class="mdl-textfield__input" name="name" id="name" >
+                    <label for="name" class="mdl-textfield__label">Product</label>
+                </div>
+                <br>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input type="number" class="mdl-textfield__input" name="price" id="price" v-model="price">
+                    <label for="price" class="mdl-textfield__label">Price (Rp)</label>
+                </div>
+                <br>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <textarea name="description" id="description" cols="30" rows="3" class="mdl-textfield__input"></textarea>
+                    <label for="description" class="mdl-textfield__label">Description</label>
+                </div>
+                <br>
+                <div id="file-upload">
+                    <input type="file" id="file" name="photo" @change="changeFile($event)" accept="image/*">
+                    <label for="file">
+                        <i class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" >
+                            Upload photo
+                        </i>
+
+                    </label>
+                    <br>
+                    <label for="">
+                        <% photo %>
+                    </label>
+                </div>
+                <br>
+                <div>
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent " @click="submit($event)">Submit</button>
+                </div>
+                <div v-if="error.trim().length!=0">
+                    <span class="error">
+                        <% error %>
+                    </span>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+<script>
+    new Vue({
+        el:"#form",
+        delimiters:["<%","%>"],
+        data :{
+            "name":"",
+            "photo":"",
+            "price":"",
+            "error":""
+        },
+        methods:{
+            submit(e) {
+                this.error ="";
+                if (this.name.trim() == "")
+                    this.error = "Name must be filled";
+                else if(isNaN(this.price) || this.price < 1)
+                    this.error = "Price must be filled or more than 0";
+                else if(this.photo.trim() == "")
+                    this.error = "Photo must be chosen";
+                if(this.error.trim().length !=0)
+                    e.preventDefault();
+            },
+            changeFile(e){
+                this.photo = e.target.files[0].name;
+            }
+        }
+    });
+</script>
+{{template "footer" .}}
