@@ -6,6 +6,7 @@ import (
 	"github.com/gin-contrib/sessions"
 	"net/http"
 	"fmt"
+	"os"
 )
 
 func AuthMiddleware() gin.HandlerFunc{
@@ -102,6 +103,6 @@ func main() {
 		report.GET("/",Controller.ReportController.View)
 	}
 
-
-	router.Run(":8081")
+	port := os.Getenv("PORT")
+	router.Run(":"+port)
 }
