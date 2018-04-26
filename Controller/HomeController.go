@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"fmt"
-	"../Model"
+	"sunnybake/Model"
 )
 var HomeController Home
 
