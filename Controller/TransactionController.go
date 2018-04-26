@@ -3,7 +3,7 @@ package Controller
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"../Model"
+	"sunnybake/Model"
 	"fmt"
 	"strconv"
 	"database/sql"

@@ -2,7 +2,7 @@ package Controller
 
 import (
 	"github.com/gin-gonic/gin"
-	"../Model"
+	"sunnybake/Model"
 	"fmt"
 	"net/http"
 	time2 "time"
