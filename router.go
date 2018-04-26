@@ -77,6 +77,7 @@ func main() {
 		product.POST("/insert",Controller.ProductController.Insert)
 	}
 	transaction := router.Group("/transaction")
+	transaction.Use(AuthMiddleware())
 	{
 		transaction.GET("/insert",Controller.TransactionController.Index)
 		transaction.POST("/insert",Controller.TransactionController.Insert)
@@ -86,6 +87,7 @@ func main() {
 	}
 
 	order := router.Group("/order")
+	order.Use(AuthMiddleware())
 	{
 		order.GET("/view",Controller.OrderController.View)
 		order.GET("/viewDetail/:id",Controller.OrderController.ViewDetail)
@@ -93,12 +95,14 @@ func main() {
 	}
 
 	receipt := router.Group("/receipt")
+	receipt.Use(AuthMiddleware())
 	{
 		receipt.GET("/view",Controller.ReceiptController.View)
 		receipt.GET("/print/:id",Controller.ReceiptController.Print)
 	}
 
 	report := router.Group("/report")
+	report.Use(AuthMiddleware())
 	{
 		report.GET("/",Controller.ReportController.View)
 	}
