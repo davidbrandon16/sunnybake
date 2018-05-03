@@ -19,7 +19,7 @@ func (receiptCon ReceiptCon) View(ctx * gin.Context){
 		fmt.Println(err.Error())
 	}else{
 		var transactionHeaders []Model.TransactionHeader
-		err:=db.Select(&transactionHeaders,"SELECT * FROM transactionheader WHERE senddatetime not like ''")
+		err:=db.Select(&transactionHeaders,"SELECT * FROM transactionheader ")
 		if(err != nil){
 			fmt.Println(err.Error())
 		}else{

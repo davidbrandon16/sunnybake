@@ -10,36 +10,87 @@ import (
 
 var ProductController ProductControl
 
-type ProductControl struct{
+type ProductControl struct {
 }
 
-func (productController ProductControl) Index(ctx *gin.Context){
-	ctx.HTML(http.StatusOK,"insert_product.html",gin.H{
+func (productController ProductControl) Index(ctx *gin.Context) {
+	ctx.HTML(http.StatusOK, "insert_product.html", gin.H{
 
 	})
 
-
 }
 
-func (productController ProductControl) Insert(ctx *gin.Context){
+func (productController ProductControl) Insert(ctx *gin.Context) {
 	var product Model.Product;
-	product.Name= ctx.PostForm("name")
-	product.Name= strings.Trim(product.Name," ")
+	product.Name = ctx.PostForm("name")
+	product.Name = strings.Trim(product.Name, " ")
 	product.Price = ctx.PostForm("price")
 	product.Description = ctx.PostForm("description")
-	file ,_:= ctx.FormFile("photo")
+	file, _ := ctx.FormFile("photo")
 
 	fmt.Println(file.Filename)
-	product.Url = strings.Replace(product.Name," ","_",-1)+"_"+strings.Replace(file.Filename," ","_",-1)
+	product.Url = strings.Replace(product.Name, " ", "_", -1) + "_" + strings.Replace(file.Filename, " ", "_", -1)
 	fmt.Println(product.Url)
-	ctx.SaveUploadedFile(file,"static/images/"+product.Url)
+	ctx.SaveUploadedFile(file, "static/images/"+product.Url)
 
-
-	db ,err := Connect()
+	db, err := Connect()
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	db.NamedExec("INSERT INTO products(name,price,url,description) VALUES(:name,:price,:url,:description)",product)
+	db.NamedExec("INSERT INTO products(name,price,url,description) VALUES(:name,:price,:url,:description)", product)
 	db.Close()
-	ctx.Redirect(http.StatusSeeOther,"/")
+	ctx.Redirect(http.StatusSeeOther, "/")
+}
+
+func (productController ProductControl) ViewUpdate(ctx *gin.Context) {
+	id := ctx.Param("id")
+	fmt.Println(id)
+	db, err := Connect()
+	if (err != nil) {
+		fmt.Println(err.Error())
+	} else {
+		var product Model.Product
+		db.Get(&product, "SELECT * FROM products WHERE id=$1", id)
+		fmt.Println(product)
+		ctx.HTML(http.StatusOK, "update_product.html", gin.H{
+			"product": product,
+		})
+
+	}
+	db.Close()
+
+}
+
+func (productControl ProductControl) Update(ctx *gin.Context) {
+	var product Model.Product;
+	db, err := Connect()
+	id:= ctx.Param("id")
+	if (err != nil) {
+		fmt.Println(err.Error())
+	} else {
+		db.Get(&product, "SELECT * FROM products WHERE id=$1", id)
+		product.Name = ctx.PostForm("name")
+		product.Name = strings.Trim(product.Name, " ")
+		product.Price = ctx.PostForm("price")
+		product.Description = ctx.PostForm("description")
+		file, _ := ctx.FormFile("photo")
+		fmt.Println(file.Filename)
+		if (file.Filename != "") {
+			product.Url = strings.Replace(product.Name, " ", "_", -1) + "_" + strings.Replace(file.Filename, " ", "_", -1)
+		}
+
+		db.NamedExec("UPDATE products SET name=:name , price=:price , description=:description,url=:url WHERE id=:id",product)
+		ctx.Redirect(http.StatusSeeOther,"/")
+	}
+}
+
+func (productControl ProductControl) Delete(ctx * gin.Context){
+	id := ctx.Param("id")
+	db , err := Connect()
+	if(err != nil){
+		fmt.Println(err.Error())
+	}else{
+		db.MustExec("DELETE FROM products WHERE id=$1",id)
+		ctx.Redirect(http.StatusSeeOther,"/")
+	}
 }

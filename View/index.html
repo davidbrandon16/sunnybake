@@ -12,8 +12,12 @@
                     <% item.Description %>
                 </div>
                 <div class="mdl-card__actions mdl-card--border">
-                    <a class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect">
-                        View Updates
+
+                    <a v-bind:href="'/product/update/'+item.Id" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect" v-if="isLogin">
+                        Update
+                    </a>
+                    <a v-bind:href="'/product/delete/'+item.Id" class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect" v-if="isLogin">
+                        Delete
                     </a>
                 </div>
             </div>
@@ -27,7 +31,13 @@
             el:"#item-card",
             delimiters:["<%","%>"],
             data:{
-                "items" : {{ .items }}
+                "items" : {{ .items }},
+                "isLogin":false ,
+            },
+            created:function(){
+                axios.get("/user").then((response)=>{
+                    this.isLogin= (response.data.user == "admin") ? true:false;
+                });
             }
         });
     })()

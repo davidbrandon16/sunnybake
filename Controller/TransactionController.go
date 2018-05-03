@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"strconv"
 	"database/sql"
+	"net/smtp"
+	"log"
 )
 
 var TransactionController TransactionCon
@@ -145,7 +147,35 @@ func (transactionCon TransactionCon) InsertPayment(ctx *gin.Context) {
 	if (err != nil) {
 		fmt.Println(err.Error())
 	} else {
+		var transactionHeader Model.TransactionHeader;
+		db.Get(&transactionHeader, "SELECT * FROM transactionheader WHERE id=$1",transaction_header_id)
+		sendEmail(transactionHeader)
 		db.MustExec("UPDATE payment SET bankname=$1 , accountname=$2 , accountnumber=$3 , price=$4 , date=$5 WHERE transactionheader_id=$6", bank, name, number, price, date,transaction_header_id)
 	}
 	ctx.Redirect(http.StatusSeeOther,"/transaction/view")
+}
+
+
+func sendEmail(transactionHeader Model.TransactionHeader){
+	from := "admsunnybake@gmail.com"
+	pass := "muarakarangpik"
+	to := "Beatricedorothy@gmail.com"
+
+	msg := "From: " + from + "\n" +
+		"To: " + to + "\n" +
+		"Subject: Payment Successfully \n\n" +
+		"Name :"+transactionHeader.CustomerName+"\n"+
+		"Address :"+transactionHeader.CustomerAddress+"\n"+
+		"Price :Rp."+transactionHeader.Price
+
+	err := smtp.SendMail("smtp.gmail.com:587",
+		smtp.PlainAuth("", from, pass, "smtp.gmail.com"),
+		from, []string{to}, []byte(msg))
+
+	if err != nil {
+		log.Printf("smtp error: %s", err)
+		return
+	}
+
+	//log.Print("sent, visit http://foobarbazz.mailinator.com")
 }

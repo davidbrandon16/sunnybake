@@ -16,7 +16,8 @@ func (homeController Home) Index(ctx * gin.Context){
 		db, err := Connect();
 		if err == nil{
 			var products []Model.Product
-			db.Select(&products,"SELECT * FROM products")
+			db.Select(&products,"SELECT * FROM products Order By id")
+			fmt.Println(products)
 			ctx.HTML(http.StatusOK,"index.html",gin.H{
 				"items":products,
 			})

@@ -55,6 +55,7 @@ func main() {
 		"View/print_receipt.html",
 		"View/report.html",
 		"View/login.html",
+		"View/update_product.html",
 	)
 	store:= sessions.NewCookieStore([]byte("secret"))
 	router.Use(sessions.Sessions("authUser",store))
@@ -75,6 +76,9 @@ func main() {
 		product.GET("/",Controller.ProductController.Index)
 		product.GET("/insert",Controller.ProductController.Index)
 		product.POST("/insert",Controller.ProductController.Insert)
+		product.GET("/update/:id",Controller.ProductController.ViewUpdate)
+		product.POST("/update/:id",Controller.ProductController.Update)
+		product.GET("/delete/:id",Controller.ProductController.Delete)
 	}
 	transaction := router.Group("/transaction")
 	transaction.Use(AuthMiddleware())
