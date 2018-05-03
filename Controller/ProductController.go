@@ -37,7 +37,7 @@ func (productController ProductControl) Insert(ctx *gin.Context) {
 	options := map[string]string{
 		"public_id": product.Url,
 	}
-	images,er:=cloudinary.Upload("https://sunnybake.herokuapp.com/static/images/"+product.Url,options)
+	images,er:=cloudinary.Upload("https://sunnybake.herokuapp.com/asset/images/"+product.Url,options)
 	if(er == nil){
 		product.Url = images.Url
 	}else{
