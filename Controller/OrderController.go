@@ -16,6 +16,7 @@ var OrderController OrderCon
 
 func (orderCon OrderCon) View(ctx *gin.Context){
 	db , err := Connect()
+	defer db.Close()
 	var transactionHeaders []Model.TransactionHeader
 	if (err != nil){
 		fmt.Println(err.Error())
@@ -30,6 +31,7 @@ func (orderCon OrderCon) ViewDetail(ctx *gin.Context){
 	transaction_header_id := ctx.Param("id")
 	var transactionDetails [] Model.TransactionDetail
 	db , err := Connect()
+	defer db.Close()
 	if(err != nil){
 		fmt.Println(err.Error())
 	}else{
@@ -64,6 +66,7 @@ func (orderCon OrderCon) ChangeStatus(ctx *gin.Context){
 	currentTime := time2.Now()
 	id:= ctx.Param("id")
 	db, err := Connect()
+	defer db.Close()
 	if(err != nil){
 		fmt.Println(err.Error())
 	}else{

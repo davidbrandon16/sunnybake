@@ -18,6 +18,7 @@ type TransactionCon struct {
 
 func (transaction TransactionCon) Index(ctx *gin.Context) {
 	db, err := Connect()
+	defer db.Close()
 	var products []Model.Product
 	if (err == nil) {
 		db.Select(&products, "SELECT * FROM products")
@@ -31,6 +32,7 @@ func (transaction TransactionCon) Index(ctx *gin.Context) {
 func (transaction TransactionCon) Insert(ctx *gin.Context) {
 	var products []Model.Product
 	db, err := Connect()
+	defer db.Close()
 	if err == nil {
 		db.Select(&products, "SELECT * FROM products")
 	}
@@ -79,6 +81,7 @@ func (transaction TransactionCon) Insert(ctx *gin.Context) {
 }
 func (trasactionCon TransactionCon) View(ctx *gin.Context) {
 	db, err := Connect()
+	defer db.Close()
 	if (err != nil) {
 		fmt.Println(err.Error())
 	} else {
@@ -120,6 +123,7 @@ func (transactionCon TransactionCon) ChangePayment(ctx *gin.Context) {
 	id := ctx.Param("id")
 
 	db, err := Connect()
+	defer db.Close()
 	if (err == nil) {
 		var transactionHeader Model.TransactionHeader
 		err := db.Get(&transactionHeader, "SELECT th.* FROM transactionheader th JOIN payment py ON py.transactionheader_id = th.id WHERE th.id = $1 and py.accountname like ''", id)
@@ -144,6 +148,7 @@ func (transactionCon TransactionCon) InsertPayment(ctx *gin.Context) {
 	price := ctx.PostForm("price")
 	date := ctx.PostForm("date")
 	db, err := Connect()
+	defer db.Close()
 	if (err != nil) {
 		fmt.Println(err.Error())
 	} else {

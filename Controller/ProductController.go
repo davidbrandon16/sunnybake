@@ -33,12 +33,25 @@ func (productController ProductControl) Insert(ctx *gin.Context) {
 	fmt.Println(product.Url)
 	ctx.SaveUploadedFile(file, "static/images/"+product.Url)
 
+	cloudinary := Model.Create("148941686835669","hj-ZYCdO6jUpiwunoh2Hu9yUgO4","sunnybake")
+	options := map[string]string{
+		"public_id": product.Url,
+	}
+	images,er:=cloudinary.Upload("https://sunnybake.herokuapp.com/static/images/"+product.Url,options)
+	if(er == nil){
+		product.Url = images.Url
+	}else{
+		fmt.Println(er)
+	}
+
+
+
 	db, err := Connect()
+	defer db.Close()
 	if err != nil {
 		fmt.Println(err.Error())
 	}
 	db.NamedExec("INSERT INTO products(name,price,url,description) VALUES(:name,:price,:url,:description)", product)
-	db.Close()
 	ctx.Redirect(http.StatusSeeOther, "/")
 }
 
@@ -46,6 +59,7 @@ func (productController ProductControl) ViewUpdate(ctx *gin.Context) {
 	id := ctx.Param("id")
 	fmt.Println(id)
 	db, err := Connect()
+	defer db.Close()
 	if (err != nil) {
 		fmt.Println(err.Error())
 	} else {
@@ -64,6 +78,7 @@ func (productController ProductControl) ViewUpdate(ctx *gin.Context) {
 func (productControl ProductControl) Update(ctx *gin.Context) {
 	var product Model.Product;
 	db, err := Connect()
+	defer db.Close()
 	id:= ctx.Param("id")
 	if (err != nil) {
 		fmt.Println(err.Error())
@@ -87,6 +102,7 @@ func (productControl ProductControl) Update(ctx *gin.Context) {
 func (productControl ProductControl) Delete(ctx * gin.Context){
 	id := ctx.Param("id")
 	db , err := Connect()
+	defer db.Close()
 	if(err != nil){
 		fmt.Println(err.Error())
 	}else{

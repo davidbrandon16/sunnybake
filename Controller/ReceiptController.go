@@ -15,6 +15,7 @@ var ReceiptController ReceiptCon
 
 func (receiptCon ReceiptCon) View(ctx * gin.Context){
 	db , err := Connect()
+	defer db.Close()
 	if(err != nil){
 		fmt.Println(err.Error())
 	}else{
@@ -33,6 +34,7 @@ func (receiptCon ReceiptCon) View(ctx * gin.Context){
 func ( receiptCon ReceiptCon) Print(ctx * gin.Context){
 	id:= ctx.Param("id")
 	db, err:= Connect()
+	defer db.Close()
 	if(err != nil){
 		fmt.Println(err.Error())
 	}else{

@@ -14,6 +14,7 @@ type Home struct{
 
 func (homeController Home) Index(ctx * gin.Context){
 		db, err := Connect();
+		defer db.Close()
 		if err == nil{
 			var products []Model.Product
 			db.Select(&products,"SELECT * FROM products Order By id")
