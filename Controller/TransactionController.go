@@ -183,7 +183,7 @@ func (transactionCon TransactionCon) InsertPayment(ctx *gin.Context) {
 				}
 			}
 			sendEmail(transactionHeader,transactions,qty)
-			//db.MustExec("UPDATE payment SET bankname=$1 , accountname=$2 , accountnumber=$3 , price=$4 , date=$5 WHERE transactionheader_id=$6", bank, name, number, price, date,transaction_header_id)
+			db.MustExec("UPDATE payment SET bankname=$1 , accountname=$2 , accountnumber=$3 , price=$4 , date=$5 WHERE transactionheader_id=$6", bank, name, number, price, date,transaction_header_id)
 		}
 	}
 	ctx.Redirect(http.StatusSeeOther,"/transaction/view")
