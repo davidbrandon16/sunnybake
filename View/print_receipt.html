@@ -66,6 +66,15 @@
     <div class="content-receipt-footer">
         <div class="content-receipt-content-row">
             <div>
+                Total Quantity
+            </div>
+            <div class="footer-price">
+                <div class="currency"></div>
+                <div class="price"><% totalQuantity %>pc(s)</div>
+            </div>
+        </div>
+        <div class="content-receipt-content-row">
+            <div>
                 Sub Price
             </div>
             <div class="footer-price">
@@ -129,12 +138,19 @@
             delimiters: ["<%", "%>"],
             data: {
                 "transactionHeader":{{.transactionHeader}},
-                "transactions":{{.transactions}}
+                "transactions":{{.transactions}},
+                "totalQuantity":0
             },
             methods: {
                 formatPrice(value) {
                     let val = (value / 1).toString().replace('.', ',')
                     return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                }
+            },
+            created:function(){
+                for(var i =0;i< this.transactions.length;i++){
+                    console.log(this.transactions[i].transactionDetail.Qty);
+                    this.totalQuantity += this.transactions[i].transactionDetail.Qty
                 }
             }
         });

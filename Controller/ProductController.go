@@ -92,6 +92,19 @@ func (productControl ProductControl) Update(ctx *gin.Context) {
 		fmt.Println(file.Filename)
 		if (file.Filename != "") {
 			product.Url = strings.Replace(product.Name, " ", "_", -1) + "_" + strings.Replace(file.Filename, " ", "_", -1)
+			fmt.Println(product.Url)
+			ctx.SaveUploadedFile(file, "static/images/"+product.Url)
+
+			cloudinary := Model.Create("148941686835669","hj-ZYCdO6jUpiwunoh2Hu9yUgO4","sunnybake")
+			options := map[string]string{
+				"public_id": product.Url,
+			}
+			images,er:=cloudinary.Upload("https://sunnybake.herokuapp.com/asset/images/"+product.Url,options)
+			if(er == nil){
+				product.Url = images.Url
+			}else{
+				fmt.Println(er)
+			}
 		}
 
 		db.NamedExec("UPDATE products SET name=:name , price=:price , description=:description,url=:url WHERE id=:id",product)

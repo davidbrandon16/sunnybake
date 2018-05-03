@@ -88,6 +88,7 @@ func main() {
 		transaction.GET("/view",Controller.TransactionController.View)
 		transaction.GET("/changePayment/:id",Controller.TransactionController.ChangePayment)
 		transaction.POST("/changePayment/:id",Controller.TransactionController.InsertPayment)
+		transaction.GET("/delete/:id",Controller.TransactionController.Delete)
 	}
 
 	order := router.Group("/order")

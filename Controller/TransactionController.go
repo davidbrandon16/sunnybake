@@ -8,7 +8,8 @@ import (
 	"strconv"
 	"database/sql"
 	"net/smtp"
-	"log"
+	"bytes"
+	"html/template"
 )
 
 var TransactionController TransactionCon
@@ -142,36 +143,152 @@ func (transactionCon TransactionCon) ChangePayment(ctx *gin.Context) {
 
 func (transactionCon TransactionCon) InsertPayment(ctx *gin.Context) {
 	transaction_header_id := ctx.Param("id")
-	bank := ctx.PostForm("bank")
+	/*bank := ctx.PostForm("bank")
 	name := ctx.PostForm("accountName")
 	number := ctx.PostForm("accountNumber")
 	price := ctx.PostForm("price")
-	date := ctx.PostForm("date")
+	date := ctx.PostForm("date")*/
 	db, err := Connect()
 	defer db.Close()
 	if (err != nil) {
 		fmt.Println(err.Error())
 	} else {
 		var transactionHeader Model.TransactionHeader;
-		db.Get(&transactionHeader, "SELECT * FROM transactionheader WHERE id=$1",transaction_header_id)
-		sendEmail(transactionHeader)
-		db.MustExec("UPDATE payment SET bankname=$1 , accountname=$2 , accountnumber=$3 , price=$4 , date=$5 WHERE transactionheader_id=$6", bank, name, number, price, date,transaction_header_id)
+		err = db.Get(&transactionHeader ,"SELECT * FROM transactionheader WHERE id = $1",transaction_header_id)
+		if(err != nil){
+			fmt.Println(err.Error())
+		}
+		qty :=0
+		var transactionDetails []Model.TransactionDetail
+		err = db.Select(&transactionDetails,"SELECT * FROM transactiondetail WHERE transaction_header_id = $1",transaction_header_id)
+		if(err != nil){
+			fmt.Println(err.Error())
+		}else {
+			var transactions []map[string]interface{}
+			for _, transactionDetail := range transactionDetails {
+				var product Model.Product
+				err = db.Get(&product, "SELECT * FROM products WHERE id = $1", transactionDetail.Product_id)
+				if (err != nil) {
+					fmt.Println(err.Error())
+				} else {
+					subPrice ,_:=strconv.Atoi(product.Price)
+					subPrice = subPrice * transactionDetail.Qty
+					transaction := map[string]interface{}{
+						"transactionDetail": transactionDetail,
+						"product":           product,
+						"subPrice":subPrice,
+					}
+					qty = qty + transactionDetail.Qty
+					transactions = append(transactions, transaction)
+				}
+			}
+			sendEmail(transactionHeader,transactions,qty)
+			//db.MustExec("UPDATE payment SET bankname=$1 , accountname=$2 , accountnumber=$3 , price=$4 , date=$5 WHERE transactionheader_id=$6", bank, name, number, price, date,transaction_header_id)
+		}
+	}
+	ctx.Redirect(http.StatusSeeOther,"/transaction/view")
+}
+func (transactionCon TransactionCon) Delete(ctx *gin.Context){
+	db , err := Connect()
+	id := ctx.Param("id")
+	defer  db.Close()
+	if(err != nil){
+		fmt.Println(err.Error())
+	}else{
+		db.MustExec("DELETE FROM transactionheader WHERE id=$1",id)
+		db.MustExec("DELETE FROM transactiondetail WHERE transaction_header_id=$1",id)
 	}
 	ctx.Redirect(http.StatusSeeOther,"/transaction/view")
 }
 
+// sending Email
+var auth smtp.Auth
+type Request struct {
+	from    string
+	to      []string
+	subject string
+	body    string
+}
 
-func sendEmail(transactionHeader Model.TransactionHeader){
-	from := "admsunnybake@gmail.com"
+func NewRequest(to []string, subject, body string) *Request {
+	return &Request{
+		to:      to,
+		subject: subject,
+		body:    body,
+	}
+}
+
+func (r *Request) SendEmail() (bool, error) {
+	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+	subject := "Subject: " + r.subject + "!\n"
+	msg := []byte(subject + mime + "\n" + r.body)
+	addr := "smtp.gmail.com:587"
+
+	if err := smtp.SendMail(addr, auth, "admsunnybake@gmail.com", r.to, msg); err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+func (r *Request) ParseTemplate(templateFileName string, data interface{}) error {
+	t, err := template.ParseFiles(templateFileName)
+	if err != nil {
+		return err
+	}
+	buf := new(bytes.Buffer)
+	if err = t.Execute(buf, data); err != nil {
+		return err
+	}
+	r.body = buf.String()
+	return nil
+}
+
+
+
+func sendEmail(th Model.TransactionHeader, ts []map[string]interface{} ,qty int){
+
+	auth = smtp.PlainAuth("", "admsunnybake@gmail.com", "muarakarangpik", "smtp.gmail.com")
+	/*templateData := struct{
+		transactionHeader Model.TransactionHeader
+		transactions []map[string]interface{}
+	}{
+		transactionHeader: th,
+		transactions:  ts,
+	}*/
+	price ,_:= strconv.Atoi(th.Price)
+	deliveryCost ,_:= strconv.Atoi(th.DeliveryCost)
+	discount,_ := strconv.Atoi(th.Discount)
+	totalPrice := price + deliveryCost- discount
+	templateData:= gin.H{
+		"transactionHeader":th,
+		"transactions":ts,
+		"totalPrice":totalPrice,
+		"qty":qty,
+	}
+
+	r := NewRequest([]string{"Beatricedorothy@gmail.com"}, "Payment Successfully", "Sunny Bake Order")
+	err := r.ParseTemplate("View/email.html", templateData)
+	if  err == nil {
+		ok, _ := r.SendEmail()
+		fmt.Println(ok)
+	}else{
+		fmt.Println(err.Error())
+	}
+
+
+
+
+	// ini yang sebelumnya
+	/*from := "admsunnybake@gmail.com"
 	pass := "muarakarangpik"
 	to := "Beatricedorothy@gmail.com"
+
+	body := ""
 
 	msg := "From: " + from + "\n" +
 		"To: " + to + "\n" +
 		"Subject: Payment Successfully \n\n" +
-		"Name :"+transactionHeader.CustomerName+"\n"+
-		"Address :"+transactionHeader.CustomerAddress+"\n"+
-		"Price :Rp."+transactionHeader.Price
+		body
 
 	err := smtp.SendMail("smtp.gmail.com:587",
 		smtp.PlainAuth("", from, pass, "smtp.gmail.com"),
@@ -180,7 +297,8 @@ func sendEmail(transactionHeader Model.TransactionHeader){
 	if err != nil {
 		log.Printf("smtp error: %s", err)
 		return
-	}
+	}*/
 
 	//log.Print("sent, visit http://foobarbazz.mailinator.com")
 }
+
