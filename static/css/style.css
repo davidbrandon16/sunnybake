@@ -8,6 +8,9 @@ body{
 h1{
     font-size: 48px;
 }
+.card-event.mdl-card{
+    height: auto !important;
+}
 
 .page-content-form{
     display: flex;

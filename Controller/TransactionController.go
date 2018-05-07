@@ -143,11 +143,11 @@ func (transactionCon TransactionCon) ChangePayment(ctx *gin.Context) {
 
 func (transactionCon TransactionCon) InsertPayment(ctx *gin.Context) {
 	transaction_header_id := ctx.Param("id")
-	/*bank := ctx.PostForm("bank")
+	bank := ctx.PostForm("bank")
 	name := ctx.PostForm("accountName")
 	number := ctx.PostForm("accountNumber")
 	price := ctx.PostForm("price")
-	date := ctx.PostForm("date")*/
+	date := ctx.PostForm("date")
 	db, err := Connect()
 	defer db.Close()
 	if (err != nil) {
