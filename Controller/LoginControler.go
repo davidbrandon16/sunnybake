@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"github.com/gin-contrib/sessions"
-	"fmt"
 )
 
 type LoginCon struct{
@@ -40,7 +39,6 @@ func (loginCon LoginCon)Login(ctx * gin.Context){
 }
 
 func(loginCon LoginCon) Logout(ctx * gin.Context){
-	fmt.Println("hai")
 	session := sessions.Default(ctx)
 	session.Set("user","")
 	session.Save()

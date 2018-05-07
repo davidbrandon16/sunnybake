@@ -6,13 +6,14 @@
     <script src="/asset/js/vue.js"></script>
     <link rel="stylesheet" href="/asset/css/style_print.css">
     <title>Sunny Bake</title>
+    <script src="/asset/js/html2canvas.js"></script>
 </head>
 <body>
 <div id="content">
     <div class="header-receipt">
         Sunny Bake
     </div>
-    <div class="content-receipt">
+    <div class="content-receipt" >
         <div class="content-receipt-header">
             <table>
                 <tr>
@@ -130,9 +131,26 @@
 <button onclick="window.print()">
     Print
 </button>
+<a href="" download="order.png"></a>
+<button onclick="download()">
+    Download
+</button>
 </body>
+
 <script>
+    function download(){
+        html2canvas(document.querySelector("#content")).then(canvas => {
+            canvas.style.display = "none";
+            document.body.appendChild(canvas);
+            var a = document.querySelector("a");
+            a.href= canvas.toDataURL("image/png");
+            document.querySelector("a").click();
+        });
+
+    }
+
     (function () {
+
         new Vue({
             el: "#content",
             delimiters: ["<%", "%>"],
@@ -149,12 +167,12 @@
             },
             created:function(){
                 for(var i =0;i< this.transactions.length;i++){
-                    console.log(this.transactions[i].transactionDetail.Qty);
                     this.totalQuantity += this.transactions[i].transactionDetail.Qty
                 }
             }
         });
     }())
+
 </script>
 
 </html>

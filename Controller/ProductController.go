@@ -28,9 +28,9 @@ func (productController ProductControl) Insert(ctx *gin.Context) {
 	product.Description = ctx.PostForm("description")
 	file, _ := ctx.FormFile("photo")
 
-	fmt.Println(file.Filename)
+	//fmt.Println(file.Filename)
 	product.Url = strings.Replace(product.Name, " ", "_", -1) + "_" + strings.Replace(file.Filename, " ", "_", -1)
-	fmt.Println(product.Url)
+	//fmt.Println(product.Url)
 	ctx.SaveUploadedFile(file, "static/images/"+product.Url)
 
 	cloudinary := Model.Create("148941686835669","hj-ZYCdO6jUpiwunoh2Hu9yUgO4","sunnybake")
@@ -57,7 +57,7 @@ func (productController ProductControl) Insert(ctx *gin.Context) {
 
 func (productController ProductControl) ViewUpdate(ctx *gin.Context) {
 	id := ctx.Param("id")
-	fmt.Println(id)
+	//fmt.Println(id)
 	db, err := Connect()
 	defer db.Close()
 	if (err != nil) {
@@ -65,7 +65,7 @@ func (productController ProductControl) ViewUpdate(ctx *gin.Context) {
 	} else {
 		var product Model.Product
 		db.Get(&product, "SELECT * FROM products WHERE id=$1", id)
-		fmt.Println(product)
+		//fmt.Println(product)
 		ctx.HTML(http.StatusOK, "update_product.html", gin.H{
 			"product": product,
 		})
@@ -89,10 +89,10 @@ func (productControl ProductControl) Update(ctx *gin.Context) {
 		product.Price = ctx.PostForm("price")
 		product.Description = ctx.PostForm("description")
 		file, _ := ctx.FormFile("photo")
-		fmt.Println(file.Filename)
+		//fmt.Println(file.Filename)
 		if (file.Filename != "") {
 			product.Url = strings.Replace(product.Name, " ", "_", -1) + "_" + strings.Replace(file.Filename, " ", "_", -1)
-			fmt.Println(product.Url)
+			//fmt.Println(product.Url)
 			ctx.SaveUploadedFile(file, "static/images/"+product.Url)
 
 			cloudinary := Model.Create("148941686835669","hj-ZYCdO6jUpiwunoh2Hu9yUgO4","sunnybake")

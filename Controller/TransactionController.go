@@ -77,7 +77,7 @@ func (transaction TransactionCon) Insert(ctx *gin.Context) {
 	payment.AccountNumber = ""
 	payment.Date = ""
 	db.NamedExec("INSERT INTO payment(bankname,accountname,accountnumber,date,transactionheader_id) VALUES (:bankname,:accountname,:accountnumber,:date,:transactionheader_id)", payment)
-	ctx.Redirect(http.StatusSeeOther, "/")
+	ctx.Redirect(http.StatusSeeOther, "/transaction/view")
 
 }
 func (trasactionCon TransactionCon) View(ctx *gin.Context) {
@@ -186,7 +186,7 @@ func (transactionCon TransactionCon) InsertPayment(ctx *gin.Context) {
 			db.MustExec("UPDATE payment SET bankname=$1 , accountname=$2 , accountnumber=$3 , price=$4 , date=$5 WHERE transactionheader_id=$6", bank, name, number, price, date,transaction_header_id)
 		}
 	}
-	ctx.Redirect(http.StatusSeeOther,"/transaction/view")
+	ctx.Redirect(http.StatusSeeOther,"/order/view")
 }
 func (transactionCon TransactionCon) Delete(ctx *gin.Context){
 	db , err := Connect()
