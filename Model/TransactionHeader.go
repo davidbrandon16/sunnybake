@@ -9,4 +9,5 @@ type TransactionHeader struct {
 	Price string
 	OrderDate string
 	SendDateTime string
+	PhoneNumber string
 }

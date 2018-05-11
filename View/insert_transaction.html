@@ -8,7 +8,7 @@
                 <div class="page-content-item">
                     <div class="card-square mdl-card mdl-shadow--2dp" v-for="product in products">
                         <div class="mdl-card__title mdl-card--expand"
-                             v-bind:style="{backgroundImage:'url(/asset/images/'+product.Url+')', backgroundSize:'cover'}">
+                             v-bind:style="{backgroundImage:'url('+product.Url+')', backgroundSize:'cover'}">
                             <h2 class="mdl-card__title-text"> <% product.Name %></h2>
                         </div>
                         <div class="mdl-card__supporting-text">
@@ -32,6 +32,10 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input type="text" name="name" class="mdl-textfield__input" id="name" v-model="name">
                         <label for="name" class="mdl-textfield__label"> Customer Name </label>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input type="text" name="phoneNumber" class="mdl-textfield__input" id="phoneNumber" v-model="phoneNumber">
+                        <label for="phoneNumber" class="mdl-textfield__label"> Customer Phone Number </label>
                     </div>
                     <br>
                     <div class="mdl-textfield mdl-js-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -99,7 +103,8 @@
                 "name": "",
                 "date": "",
                 "address": "",
-                "error": ""
+                "error": "",
+                "phoneNumber":""
             },
             watch: {
                 products: {
@@ -140,6 +145,8 @@
                         this.error = "Address Must be Filled";
                     } else if (this.price == 0 || isNaN(this.price) || this.price < 0) {
                         this.error = "Price must be filled";
+                    }else if(this.phoneNumber.trim() ==""){
+                        this.error = "Phone number must be filled";
                     }
                     if (this.error.length != 0) {
                         e.preventDefault();

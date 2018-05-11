@@ -43,6 +43,7 @@ func (transaction TransactionCon) Insert(ctx *gin.Context) {
 	discount := ctx.PostForm("discount")
 	price := ctx.PostForm("price")
 	delivery_cost := ctx.PostForm("delivery")
+	phoneNumber := ctx.PostForm("phoneNumber")
 
 	var transactionHeader Model.TransactionHeader
 	transactionHeader.CustomerName = customer_name
@@ -52,7 +53,8 @@ func (transaction TransactionCon) Insert(ctx *gin.Context) {
 	transactionHeader.Price = price
 	transactionHeader.DeliveryCost = delivery_cost
 	transactionHeader.SendDateTime = ""
-	_, err = db.NamedExec("INSERT INTO TransactionHeader(customername,customeraddress,discount,deliverycost,price,orderdate,senddatetime) VALUES (:customername, :customeraddress, :discount,:deliverycost,:price,:orderdate,:senddatetime)", transactionHeader)
+	transactionHeader.PhoneNumber = phoneNumber
+	_, err = db.NamedExec("INSERT INTO TransactionHeader(customername,customeraddress,discount,deliverycost,price,orderdate,senddatetime,phonenumber) VALUES (:customername, :customeraddress, :discount,:deliverycost,:price,:orderdate,:senddatetime,:phonenumber)", transactionHeader)
 	if (err != nil) {
 		fmt.Println(err.Error())
 	}
