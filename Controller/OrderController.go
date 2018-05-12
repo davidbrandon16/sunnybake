@@ -21,7 +21,7 @@ func (orderCon OrderCon) View(ctx *gin.Context){
 	if (err != nil){
 		fmt.Println(err.Error())
 	}else{
-		db.Select(&transactionHeaders,"SELECT th.* FROM transactionheader th LEFT JOIN payment py ON th.id = py.transactionheader_id WHERE py.accountname not like '' and th.senddatetime =''")
+		db.Select(&transactionHeaders,"SELECT Distinct th.* FROM transactionheader th LEFT JOIN payment py ON th.id = py.transactionheader_id WHERE py.accountname not like '' and th.senddatetime =''")
 		ctx.HTML(http.StatusOK,"order_view.html",gin.H{
 			"transactionHeaders":transactionHeaders,
 		})
