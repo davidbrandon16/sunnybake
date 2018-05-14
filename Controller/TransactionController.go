@@ -21,12 +21,19 @@ func (transaction TransactionCon) Index(ctx *gin.Context) {
 	db, err := Connect()
 	defer db.Close()
 	var products []Model.Product
+	var discounts []Model.Discount
 	if (err == nil) {
 		db.Select(&products, "SELECT * FROM products")
+		err := db.Select(&discounts,"SELECT * FROM discount")
+		if(err != nil){
+			fmt.Println(err.Error())
+			discounts = nil
+		}
 	}
 
 	ctx.HTML(http.StatusOK, "insert_transaction.html", gin.H{
 		"products": products,
+		"discounts":discounts,
 	})
 
 }

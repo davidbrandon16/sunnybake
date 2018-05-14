@@ -1,0 +1,79 @@
+{{template "header" .}}
+<main class="mdl-layout__content">
+    <div class="page-content">
+        <div class="page-content-form" id="form">
+            <h1>Insert Discount</h1>
+            <form action="/discount/insert"  method="post" >
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input v-model="name" type="text" class="mdl-textfield__input" name="name" id="name" >
+                    <label for="name" class="mdl-textfield__label">Discount Name</label>
+                </div>
+                <br>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
+                    <input type="text" value="" class="mdl-textfield__input" id="type" readonly @change="changeType()" >
+                    <input type="hidden" name="type"  v-model="type" id="typeHidden" >
+                    <label for="type" class="mdl-textfield__label">Type</label>
+                    <ul for="type" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+                        <li class="mdl-menu__item" data-val="Percent">Percent</li>
+                        <li class="mdl-menu__item" data-val="Price">Price</li>
+                    </ul>
+                </div>
+                <br>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input type="number" class="mdl-textfield__input" name="price" id="price" v-model="price">
+                    <label for="price" class="mdl-textfield__label"><%price_type%></label>
+                </div>
+                <br>
+                <div>
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent " @click="submit($event)">Submit</button>
+                </div>
+                <div v-if="error.trim().length!=0">
+                    <span class="error">
+                        <% error %>
+                    </span>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+<script>
+    (function(){
+        new Vue({
+            el:"#form",
+            delimiters:["<%","%>"],
+            data:{
+                name:"",
+                type:"",
+                price:"",
+                error: "",
+            },
+            computed:{
+                price_type :function(){
+                    return (this.type == "Percent"?"Percent (%)":"Price (Rp)")
+                }
+            },
+            methods:{
+                submit(e){
+                    this.error = "";
+                    if(this.name.trim().length ==0){
+                        this.error = "name must be filled";
+                    }else if(this.type == ""){
+                        this.error = "Type Must be choosen";
+                    }else if(this.price == "" || this.price < 1){
+                        this.error = this.type+ " must be filled";
+                    }else if(this.type == "Percent" && this.price > 100){
+                        this.error = "percent can't more than 100";
+                    }
+                    if(this.error != ""){
+                        e.preventDefault();
+                    }
+                },
+                changeType(){
+                    this.type = document.querySelector("#typeHidden").value;
+                },
+            }
+        });
+    }())
+
+</script>
+{{template "footer" .}}

@@ -56,6 +56,9 @@ func main() {
 		"View/report.html",
 		"View/login.html",
 		"View/update_product.html",
+		"View/insert_discount.html",
+		"View/view_discount.html",
+		"View/update_discount.html",
 	)
 	store:= sessions.NewCookieStore([]byte("secret"))
 	router.Use(sessions.Sessions("authUser",store))
@@ -104,6 +107,17 @@ func main() {
 	{
 		receipt.GET("/view",Controller.ReceiptController.View)
 		receipt.GET("/print/:id",Controller.ReceiptController.Print)
+	}
+
+	discount := router.Group("/discount")
+	discount.Use(AuthMiddleware())
+	{
+		discount.GET("/view",Controller.DiscountController.View)
+		discount.GET("/insert",Controller.DiscountController.Index)
+		discount.POST("/insert",Controller.DiscountController.Insert)
+		discount.GET("/update/:id",Controller.DiscountController.Update)
+		discount.POST("/update/:id",Controller.DiscountController.UpdateData)
+		discount.GET("/delete/:id",Controller.DiscountController.Delete)
 	}
 
 	report := router.Group("/report")

@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="/asset/css/jquery-ui.theme.min.css">
     <script src="/asset/js/jquery-ui.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="/asset/css/getmdl.select.min.css">
+    <script src="/asset/js/getmdl.select.min.js"></script>
 
 </head>
 <body>
@@ -28,11 +30,13 @@
             <!-- Add spacer, to align navigation to the right -->
             <div class="mdl-layout-spacer"></div>
             <!-- Navigation. We hide it in small screens. -->
-            <nav class="mdl-navigation" id="header">
+            <nav class="mdl-navigation mdl-layout--large-screen-only" id="header">
                 <a class="mdl-navigation__link" href="/">View Product</a>
                 <a class="mdl-navigation__link" v-if="isLogin" href="/product/insert">Insert Product</a>
+                <a class="mdl-navigation__link" v-if="isLogin" href="/discount/insert">Insert Discount</a>
                 <a class="mdl-navigation__link" v-if="isLogin" href="/transaction/insert">Insert Transaction</a>
                 <a class="mdl-navigation__link" v-if="isLogin" href="/transaction/view">View Transaction</a>
+                <a class="mdl-navigation__link" v-if="isLogin" href="/discount/view">View Discount</a>
                 <a class="mdl-navigation__link" v-if="isLogin" href="/order/view">View Order</a>
                 <a class="mdl-navigation__link" v-if="isLogin" href="/receipt/view">View Receipt</a>
                 <a class="mdl-navigation__link" v-if="isLogin" href="/report">Report</a>
@@ -46,8 +50,10 @@
         <nav class="mdl-navigation" id="headerSide">
             <a class="mdl-navigation__link" href="/">View Product</a>
             <a class="mdl-navigation__link" v-if="isLogin" href="/product/insert">Insert Product</a>
+            <a class="mdl-navigation__link" v-if="isLogin" href="/discount/insert">Insert Discount</a>
             <a class="mdl-navigation__link" v-if="isLogin" href="/transaction/insert">Insert Transaction</a>
             <a class="mdl-navigation__link" v-if="isLogin" href="/transaction/view">View Transaction</a>
+            <a class="mdl-navigation__link" v-if="isLogin" href="/discount/view">View Discount</a>
             <a class="mdl-navigation__link" v-if="isLogin" href="/order/view">View Order</a>
             <a class="mdl-navigation__link" v-if="isLogin" href="/receipt/view">View Receipt</a>
             <a class="mdl-navigation__link" v-if="isLogin" href="/report">Report</a>
