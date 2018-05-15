@@ -210,6 +210,112 @@ func (transactionCon TransactionCon) Delete(ctx *gin.Context){
 	ctx.Redirect(http.StatusSeeOther,"/transaction/view")
 }
 
+
+func (transactionCon TransactionCon) Update(ctx *gin.Context){
+	id := ctx.Param("id")
+	db,err:= Connect()
+	if(err != nil){
+		fmt.Println(err.Error())
+	}else{
+		var transactionHeader Model.TransactionHeader
+		var products [] Model.Product
+		var discounts [] Model.Discount
+		db.Get(&transactionHeader,"SELECT * FROM transactionheader WHERE id = $1",id)
+		db.Select(&products,"SELECT * FROM products")
+		db.Select(&discounts,"SELECT * FROM discount")
+		var transactionDetails [] Model.TransactionDetail
+		db.Select(&transactionDetails,"SELECT * FROM transactiondetail WHERE transaction_header_id = $1",id)
+		var tdQty map[int]int
+		tdQty = make(map[int]int)
+		for _,value := range transactionDetails{
+			tdQty[value.Product_id] = value.Qty
+		}
+		var ps []struct {
+			Id int
+			Name string
+			Price string
+			Url string
+			Description string
+			Qty int
+		}
+		for _,value:= range products{
+			_, ok:= tdQty[value.Id]
+			var p struct {
+				Id int
+				Name string
+				Price string
+				Url string
+				Description string
+				Qty int
+			}
+			p.Id = value.Id
+			p.Price = value.Price
+			p.Name = value.Name
+			p.Url = value.Url
+			p.Description = value.Description
+			if ok {
+				p.Qty =tdQty[value.Id]
+			}
+			ps = append(ps,p)
+		}
+		ctx.HTML(http.StatusOK,"update_transaction.html",gin.H{
+			"products" : ps,
+			"discounts":discounts,
+			"transactionHeader":transactionHeader,
+			"tdQty":tdQty,
+		})
+	}
+}
+
+func (transactionCon TransactionCon) UpdateData(ctx *gin.Context){
+	var products []Model.Product
+	db, err := Connect()
+	defer db.Close()
+	if err == nil {
+		db.Select(&products, "SELECT * FROM products")
+	}
+	customer_name := ctx.PostForm("name")
+	order_date := ctx.PostForm("date")
+	address := ctx.PostForm("address")
+	discount := ctx.PostForm("discount")
+	price := ctx.PostForm("price")
+	delivery_cost := ctx.PostForm("delivery")
+	phoneNumber := ctx.PostForm("phoneNumber")
+
+	var transactionHeader Model.TransactionHeader
+	id,_ := strconv.Atoi(ctx.Param("id"));
+	transactionHeader.Id = id
+	transactionHeader.CustomerName = customer_name
+	transactionHeader.CustomerAddress = address
+	transactionHeader.OrderDate = order_date
+	transactionHeader.Discount = discount
+	transactionHeader.Price = price
+	transactionHeader.DeliveryCost = delivery_cost
+	transactionHeader.SendDateTime = ""
+	transactionHeader.PhoneNumber = phoneNumber
+	_, err = db.NamedExec("UPDATE TransactionHeader SET customername=:customername,customeraddress=:customeraddress,discount=:discount,deliverycost=:deliverycost,price=:price,orderdate=:orderdate,senddatetime=:senddatetime,phonenumber=:phonenumber WHERE id=:id", transactionHeader)
+	if (err != nil) {
+		fmt.Println(err.Error())
+	}
+	err = db.Get(&transactionHeader, "SELECT * FROM transactionheader WHERE id =$1",id)
+	if (err != nil) {
+		fmt.Println(err.Error())
+	}
+	db.MustExec("SELECT * FROM transactionDetail WHERE transaction_header_id=$1",id)
+	for _, product := range products {
+		qty := ctx.PostForm("qty" + strconv.Itoa(product.Id))
+		if (qty != "") {
+			var transactionDetail Model.TransactionDetail
+			transactionDetail.Product_id = product.Id
+			transactionDetail.Qty, _ = strconv.Atoi(qty)
+			transactionDetail.Transaction_Header_id = transactionHeader.Id
+			db.NamedExec("INSERT INTO transactionDetail(product_id,qty,transaction_header_id) VALUES (:product_id,:qty,:transaction_header_id)", transactionDetail)
+		}
+	}
+	ctx.Redirect(http.StatusSeeOther, "/transaction/view")
+}
+
+
 // sending Email
 var auth smtp.Auth
 type Request struct {

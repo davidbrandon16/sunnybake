@@ -59,6 +59,7 @@ func main() {
 		"View/insert_discount.html",
 		"View/view_discount.html",
 		"View/update_discount.html",
+		"View/update_transaction.html",
 	)
 	store:= sessions.NewCookieStore([]byte("secret"))
 	router.Use(sessions.Sessions("authUser",store))
@@ -92,6 +93,8 @@ func main() {
 		transaction.GET("/changePayment/:id",Controller.TransactionController.ChangePayment)
 		transaction.POST("/changePayment/:id",Controller.TransactionController.InsertPayment)
 		transaction.GET("/delete/:id",Controller.TransactionController.Delete)
+		transaction.GET("/update/:id",Controller.TransactionController.Update)
+		transaction.POST("/update/:id",Controller.TransactionController.UpdateData)
 	}
 
 	order := router.Group("/order")
