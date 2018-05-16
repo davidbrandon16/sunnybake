@@ -236,7 +236,7 @@ func (transactionCon TransactionCon) Update(ctx *gin.Context){
 			Price string
 			Url string
 			Description string
-			Qty int
+			Qty string
 		}
 		for _,value:= range products{
 			_, ok:= tdQty[value.Id]
@@ -246,7 +246,7 @@ func (transactionCon TransactionCon) Update(ctx *gin.Context){
 				Price string
 				Url string
 				Description string
-				Qty int
+				Qty string
 			}
 			p.Id = value.Id
 			p.Price = value.Price
@@ -254,7 +254,7 @@ func (transactionCon TransactionCon) Update(ctx *gin.Context){
 			p.Url = value.Url
 			p.Description = value.Description
 			if ok {
-				p.Qty =tdQty[value.Id]
+				p.Qty =strconv.Itoa(tdQty[value.Id])
 			}
 			ps = append(ps,p)
 		}
@@ -301,9 +301,12 @@ func (transactionCon TransactionCon) UpdateData(ctx *gin.Context){
 	if (err != nil) {
 		fmt.Println(err.Error())
 	}
-	db.MustExec("SELECT * FROM transactionDetail WHERE transaction_header_id=$1",id)
+	db.MustExec("DELETE FROM transactionDetail WHERE transaction_header_id=$1",id)
 	for _, product := range products {
 		qty := ctx.PostForm("qty" + strconv.Itoa(product.Id))
+		if(qty == "0"){
+			continue
+		}
 		if (qty != "") {
 			var transactionDetail Model.TransactionDetail
 			transactionDetail.Product_id = product.Id
