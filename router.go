@@ -17,9 +17,10 @@ func AuthMiddleware() gin.HandlerFunc{
 		if(user != "admin"){
 			ctx.Redirect(http.StatusSeeOther,"/")
 			return;
+		}else {
+			fmt.Println(user)
+			ctx.Next();
 		}
-		fmt.Println(user)
-		ctx.Next();
 
 	}
 }
@@ -31,9 +32,10 @@ func LoginMiddleware() gin.HandlerFunc{
 		if(user == "admin"){
 			ctx.Redirect(http.StatusSeeOther,"/")
 			return;
+		}else{
+			fmt.Println(user)
+			ctx.Next();
 		}
-		fmt.Println(user)
-		ctx.Next();
 
 	}
 }
