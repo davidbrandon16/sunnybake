@@ -111,6 +111,7 @@ func main() {
 	receipt.Use(AuthMiddleware())
 	{
 		receipt.GET("/view",Controller.ReceiptController.View)
+		receipt.GET("/view/:page",Controller.ReceiptController.ViewPage)
 		receipt.GET("/print/:id",Controller.ReceiptController.Print)
 	}
 

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"sunnybake/Model"
 	"net/http"
+	"strconv"
 )
 
 type ReceiptCon struct {
@@ -20,7 +21,7 @@ func (receiptCon ReceiptCon) View(ctx * gin.Context){
 		fmt.Println(err.Error())
 	}else{
 		var transactionHeaders []Model.TransactionHeader
-		err:=db.Select(&transactionHeaders,"SELECT * FROM transactionheader ORDER BY orderdate Desc")
+		err:=db.Select(&transactionHeaders,"SELECT * FROM transactionheader ORDER BY orderdate Desc LIMIT 10")
 		if(err != nil){
 			fmt.Println(err.Error())
 		}else{
@@ -68,4 +69,38 @@ func ( receiptCon ReceiptCon) Print(ctx * gin.Context){
 			})
 		}
 	}
+}
+
+func (reciptCon ReceiptCon) ViewPage(ctx *gin.Context){
+	var total_data int;
+	db , err := Connect()
+	defer db.Close()
+	if(err != nil){
+		fmt.Println(err.Error())
+	}else{
+		//var transaction_headers[] Model.TransactionHeader
+		db.Get(&total_data, "SELECT count(id) FROM transactionheader ")
+		var page int
+		page ,err = strconv.Atoi(ctx.Param("page"))
+		data := page*10
+		if(data < total_data){
+			var until int
+			if(total_data - data<10){
+				until = total_data - data;
+			}else{
+				until= 10
+			}
+			var transactionHeaders[] Model.TransactionHeader
+			db.Select(&transactionHeaders,"SELECT * FROM transactionheader ORDER BY orderdate Desc LIMIT $1 OFFSET $2",until, data+1)
+			ctx.JSON(http.StatusOK,gin.H{
+				"transactionHeaders":transactionHeaders,
+			})
+			return;
+		}
+		ctx.JSON(http.StatusOK,gin.H{
+			"transactionHeaders":nil,
+		})
+
+	}
+
 }
