@@ -130,8 +130,8 @@
                     Rp.
                 </div>
                 <div class="price">
-                    <%formatPrice(parseInt(transactionHeader.Price) - parseInt(transactionHeader.Discount)+
-                    parseInt(transactionHeader.DeliveryCost))%>
+                    <%formatPrice(parseFloat(transactionHeader.Price) - parseFloat(transactionHeader.Discount)+
+                    parseFloat(transactionHeader.DeliveryCost))%>
                 </div>
 
             </div>
