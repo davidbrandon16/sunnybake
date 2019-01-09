@@ -21,7 +21,7 @@ func (receiptCon ReceiptCon) View(ctx * gin.Context){
 		fmt.Println(err.Error())
 	}else{
 		var transactionHeaders []Model.TransactionHeader
-		err:=db.Select(&transactionHeaders,"SELECT * FROM transactionheader ORDER BY orderdate Desc LIMIT 10")
+		err:=db.Select(&transactionHeaders,"SELECT * FROM transactionheader ORDER BY orderdate DESC, id DESC LIMIT 10")
 		if(err != nil){
 			fmt.Println(err.Error())
 		}else{
