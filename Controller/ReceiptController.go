@@ -1,104 +1,103 @@
 package Controller
 
 import (
-	"github.com/gin-gonic/gin"
 	"fmt"
-	"sunnybake/Model"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+	"sunnybake/Model"
 )
 
 type ReceiptCon struct {
-
 }
 
 var ReceiptController ReceiptCon
 
-func (receiptCon ReceiptCon) View(ctx * gin.Context){
-	db , err := Connect()
+func (receiptCon ReceiptCon) View(ctx *gin.Context) {
+	db, err := Connect()
 	defer db.Close()
-	if(err != nil){
+	if err != nil {
 		fmt.Println(err.Error())
-	}else{
+	} else {
 		var transactionHeaders []Model.TransactionHeader
-		err:=db.Select(&transactionHeaders,"SELECT * FROM transactionheader ORDER BY orderdate DESC, id DESC LIMIT 10")
-		if(err != nil){
+		err := db.Select(&transactionHeaders, "SELECT * FROM transactionheader ORDER BY orderdate::date DESC LIMIT 10")
+		if err != nil {
 			fmt.Println(err.Error())
-		}else{
-			ctx.HTML(http.StatusOK,"view_receipt.html",gin.H{
-				"transactionHeaders":transactionHeaders,
+		} else {
+			ctx.HTML(http.StatusOK, "view_receipt.html", gin.H{
+				"transactionHeaders": transactionHeaders,
 			})
 		}
 	}
 }
 
-func ( receiptCon ReceiptCon) Print(ctx * gin.Context){
-	id:= ctx.Param("id")
-	db, err:= Connect()
+func (receiptCon ReceiptCon) Print(ctx *gin.Context) {
+	id := ctx.Param("id")
+	db, err := Connect()
 	defer db.Close()
-	if(err != nil){
+	if err != nil {
 		fmt.Println(err.Error())
-	}else{
+	} else {
 		var transactionHeader Model.TransactionHeader
-		err = db.Get(&transactionHeader ,"SELECT * FROM transactionheader WHERE id = $1",id)
-		if(err != nil){
+		err = db.Get(&transactionHeader, "SELECT * FROM transactionheader WHERE id = $1", id)
+		if err != nil {
 			fmt.Println(err.Error())
 		}
 		var transactionDetails []Model.TransactionDetail
-		err = db.Select(&transactionDetails,"SELECT * FROM transactiondetail WHERE transaction_header_id = $1",id)
-		if(err != nil){
+		err = db.Select(&transactionDetails, "SELECT * FROM transactiondetail WHERE transaction_header_id = $1", id)
+		if err != nil {
 			fmt.Println(err.Error())
-		}else{
-			var transactions []map[string] interface{}
-			for _,transactionDetail := range transactionDetails{
+		} else {
+			var transactions []map[string]interface{}
+			for _, transactionDetail := range transactionDetails {
 				var product Model.Product
-				err = db.Get(&product,"SELECT * FROM products WHERE id = $1",transactionDetail.Product_id)
-				if(err != nil){
+				err = db.Get(&product, "SELECT * FROM products WHERE id = $1", transactionDetail.Product_id)
+				if err != nil {
 					fmt.Println(err.Error())
-				}else {
+				} else {
 					transaction := map[string]interface{}{
 						"transactionDetail": transactionDetail,
-						"product":product,
+						"product":           product,
 					}
-					transactions = append(transactions,transaction)
+					transactions = append(transactions, transaction)
 				}
 			}
-			ctx.HTML(http.StatusOK,"print_receipt.html",gin.H{
-				"transactionHeader":transactionHeader,
-				"transactions":transactions,
+			ctx.HTML(http.StatusOK, "print_receipt.html", gin.H{
+				"transactionHeader": transactionHeader,
+				"transactions":      transactions,
 			})
 		}
 	}
 }
 
-func (reciptCon ReceiptCon) ViewPage(ctx *gin.Context){
-	var total_data int;
-	db , err := Connect()
+func (reciptCon ReceiptCon) ViewPage(ctx *gin.Context) {
+	var total_data int
+	db, err := Connect()
 	defer db.Close()
-	if(err != nil){
+	if err != nil {
 		fmt.Println(err.Error())
-	}else{
+	} else {
 		//var transaction_headers[] Model.TransactionHeader
 		db.Get(&total_data, "SELECT count(id) FROM transactionheader ")
 		var page int
-		page ,err = strconv.Atoi(ctx.Param("page"))
-		data := page*10
-		if(data < total_data){
+		page, err = strconv.Atoi(ctx.Param("page"))
+		data := page * 10
+		if data < total_data {
 			var until int
-			if(total_data - data<10){
-				until = total_data - data;
-			}else{
-				until= 10
+			if total_data-data < 10 {
+				until = total_data - data
+			} else {
+				until = 10
 			}
-			var transactionHeaders[] Model.TransactionHeader
-			db.Select(&transactionHeaders,"SELECT * FROM transactionheader ORDER BY orderdate Desc LIMIT $1 OFFSET $2",until, data+1)
-			ctx.JSON(http.StatusOK,gin.H{
-				"transactionHeaders":transactionHeaders,
+			var transactionHeaders []Model.TransactionHeader
+			db.Select(&transactionHeaders, "SELECT * FROM transactionheader ORDER BY orderdate Desc LIMIT $1 OFFSET $2", until, data+1)
+			ctx.JSON(http.StatusOK, gin.H{
+				"transactionHeaders": transactionHeaders,
 			})
-			return;
+			return
 		}
-		ctx.JSON(http.StatusOK,gin.H{
-			"transactionHeaders":nil,
+		ctx.JSON(http.StatusOK, gin.H{
+			"transactionHeaders": nil,
 		})
 
 	}
