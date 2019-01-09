@@ -42,7 +42,7 @@
                 lazyLoad: _.debounce(function () {
                     var self = this;
                     var main = document.querySelector("main");
-                    if (main.scrollTop >= main.clientHeight) {
+                    if (main.scrollTop+main.clientHeight >= main.scrollHeight) {
                         axios.get(`/receipt/view/${self.page++}`).then((response) => {
                             if (response.data.transactionHeaders == null) return;
                             self.transactionHeaders = self.transactionHeaders.concat(response.data.transactionHeaders);
