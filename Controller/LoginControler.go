@@ -23,7 +23,7 @@ func (loginCon LoginCon) View (ctx * gin.Context){
 func (loginCon LoginCon)Login(ctx * gin.Context){
 	username := ctx.PostForm("username")
 	password := ctx.PostForm("password")
-	if(username != "admin" || password != "muarakarangpik"){
+	if(username != "admin" || password != "adminbttr"){
 		ctx.HTML(http.StatusOK,"login.html",gin.H{
 			"error":"Wrong username or password",
 			"username":username,
