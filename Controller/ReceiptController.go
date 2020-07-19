@@ -39,13 +39,10 @@ func (receiptCon ReceiptCon) Print(ctx *gin.Context) {
 		fmt.Println(err.Error())
 	} else {
 		var transactionHeader Model.TransactionHeader
-		err = db.Get(&transactionHeader, "SELECT * FROM transactionheader WHERE id = $1", id)
+		err = db.Get(&transactionHeader, "SELECT id,customername,customeraddress,discount,deliverycost,price,orderdate,phonenumber, delivery,concat(substring(senddatetime, 1,position (':' in senddatetime )-3),' ',right(senddatetime ,4),' ',substring(senddatetime , position (':' in senddatetime )-2 , 8)) as senddatetime FROM transactionheader WHERE id = $1", id)
 		if err != nil {
 			fmt.Println(err.Error())
 		}
-		sendDateTime := transactionHeader.SendDateTime
-		sendDateTimeSplit := sendDateTime.split(" ")
-		transactionHeader.SendDateTime := sendDateTimeSplit[0]+" " sendDateTimeSplit[1] + " "+ sendDateTimeSplit[2] + " "+sendDateTimeSplit[5] + " " + sendDateTimeSplit[3]
 		var transactionDetails []Model.TransactionDetail
 		err = db.Select(&transactionDetails, "SELECT * FROM transactiondetail WHERE transaction_header_id = $1", id)
 		if err != nil {
