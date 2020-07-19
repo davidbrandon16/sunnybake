@@ -36,6 +36,16 @@
                     <td>:</td>
                     <td><%transactionHeader.OrderDate%></td>
                 </tr>
+                <tr>
+                    <td style="white-space: nowrap">Sent Date</td>
+                    <td>:</td>
+                    <td><%transactionHeader.SendDateTime%></td>
+                </tr>
+                <tr>
+                    <td style="white-space: nowrap">Delivery Partner</td>
+                    <td>:</td>
+                    <td><%transactionHeader.Delivery%></td>
+                </tr>
             </table>
         </div>
         <div class="content-receipt-content">
@@ -102,7 +112,7 @@
                     Rp.
                 </div>
                 <div class="price">
-                    {{/*<span style="font-size: 20px;line-height: 16px;">-</span>*/}}<%formatPrice(transactionHeader.Discount)%>
+                    - {{/*<span style="font-size: 20px;line-height: 16px;">-</span>*/}}<%formatPrice(transactionHeader.Discount)%>
                 </div>
 
             </div>
@@ -139,13 +149,13 @@
     </div>
     <div class="content-receipt-footer">
         <div class="content-receipt-content-row" style="justify-content: center">
-            Bank BCA cab Muara Karang 2
+            Bank BCA
         </div>
         <div class="content-receipt-content-row" style="justify-content: center">
-            5810476691
+            0060631140
         </div>
         <div class="content-receipt-content-row" style="justify-content: center">
-            A/N: Dorothy Beatrice
+            A/N: Stevie Gabriel
         </div>
     </div>
 </div>

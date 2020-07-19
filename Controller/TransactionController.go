@@ -51,6 +51,7 @@ func (transaction TransactionCon) Insert(ctx *gin.Context) {
 	price := ctx.PostForm("price")
 	delivery_cost := ctx.PostForm("delivery")
 	phoneNumber := ctx.PostForm("phoneNumber")
+	deliveryType := ctx.PostForm("deliveryType")
 
 	var transactionHeader Model.TransactionHeader
 	transactionHeader.CustomerName = customer_name
@@ -61,7 +62,8 @@ func (transaction TransactionCon) Insert(ctx *gin.Context) {
 	transactionHeader.DeliveryCost = delivery_cost
 	transactionHeader.SendDateTime = ""
 	transactionHeader.PhoneNumber = phoneNumber
-	_, err = db.NamedExec("INSERT INTO TransactionHeader(customername,customeraddress,discount,deliverycost,price,orderdate,senddatetime,phonenumber) VALUES (:customername, :customeraddress, :discount,:deliverycost,:price,:orderdate,:senddatetime,:phonenumber)", transactionHeader)
+	transactionHeader.Delivery = deliveryType
+	_, err = db.NamedExec("INSERT INTO TransactionHeader(customername,customeraddress,discount,deliverycost,price,orderdate,senddatetime,phonenumber,delivery) VALUES (:customername, :customeraddress, :discount,:deliverycost,:price,:orderdate,:senddatetime,:phonenumber,:delivery)", transactionHeader)
 	if (err != nil) {
 		fmt.Println(err.Error())
 	}
@@ -281,6 +283,7 @@ func (transactionCon TransactionCon) UpdateData(ctx *gin.Context){
 	price := ctx.PostForm("price")
 	delivery_cost := ctx.PostForm("delivery")
 	phoneNumber := ctx.PostForm("phoneNumber")
+	deliveryType := ctx.PostForm("deliveryType")
 
 	var transactionHeader Model.TransactionHeader
 	id,_ := strconv.Atoi(ctx.Param("id"));
@@ -293,7 +296,8 @@ func (transactionCon TransactionCon) UpdateData(ctx *gin.Context){
 	transactionHeader.DeliveryCost = delivery_cost
 	transactionHeader.SendDateTime = ""
 	transactionHeader.PhoneNumber = phoneNumber
-	_, err = db.NamedExec("UPDATE TransactionHeader SET customername=:customername,customeraddress=:customeraddress,discount=:discount,deliverycost=:deliverycost,price=:price,orderdate=:orderdate,senddatetime=:senddatetime,phonenumber=:phonenumber WHERE id=:id", transactionHeader)
+	transactionHeader.Delivery = deliveryType
+	_, err = db.NamedExec("UPDATE TransactionHeader SET customername=:customername,customeraddress=:customeraddress,discount=:discount,deliverycost=:deliverycost,price=:price,orderdate=:orderdate,senddatetime=:senddatetime,phonenumber=:phonenumber, delivery=:delivery WHERE id=:id", transactionHeader)
 	if (err != nil) {
 		fmt.Println(err.Error())
 	}

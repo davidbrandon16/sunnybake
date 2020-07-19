@@ -87,6 +87,11 @@
                     </div>
                     <br>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input type="text" name="deliveryType" class="mdl-textfield__input" id="deliveryType" v-model="deliveryType">
+                        <label for="deliveryType" class="mdl-textfield__label"> Delivery Partner </label>
+                    </div>
+                    <br>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="totalPrice"
                                v-model="totalPrice">
                         <label class="mdl-textfield__label" for="totalPrice">Total Price (Rp)</label>
@@ -125,6 +130,7 @@
                 "phoneNumber":{{.transactionHeader.PhoneNumber}},
                 "discounts":{{.discounts}},
                 "tdQty":{{.tdQty}},
+                "deliveryType":{{.transactionHeader.Delivery}}
             },
             watch: {
                 products: {
