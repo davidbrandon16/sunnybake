@@ -98,7 +98,7 @@ func (trasactionCon TransactionCon) View(ctx *gin.Context) {
 		fmt.Println(err.Error())
 	} else {
 		var transaction_headers []Model.TransactionHeader
-		db.Select(&transaction_headers, "SELECT distinct th.id, th.customername, th.customeraddress, th.discount, th.deliverycost, th.price,th.orderdate,th.senddatetime FROM transactionheader th LEFT JOIN payment py ON th.id = py.transactionheader_id WHERE py.accountname like '' order By id Desc")
+		db.Select(&transaction_headers, "SELECT distinct th.id, th.customername, th.customeraddress, th.discount, th.deliverycost, th.price,th.orderdate,th.senddatetime, th.delivery FROM transactionheader th LEFT JOIN payment py ON th.id = py.transactionheader_id WHERE py.accountname like '' order By id Desc")
 		var obj_transaction_headers []interface{}
 		for _, transaction_header := range transaction_headers {
 			var transaction_details []Model.TransactionDetail
