@@ -90,7 +90,7 @@ func (productControl ProductControl) Update(ctx *gin.Context) {
 		product.Description = ctx.PostForm("description")
 		file, _ := ctx.FormFile("photo")
 		//fmt.Println(file.Filename)
-		if (file.Filename != "") {
+		if (file != nil && file.Filename != "") {
 			product.Url = strings.Replace(product.Name, " ", "_", -1) + "_" + strings.Replace(file.Filename, " ", "_", -1)
 			//fmt.Println(product.Url)
 			ctx.SaveUploadedFile(file, "static/images/"+product.Url)
