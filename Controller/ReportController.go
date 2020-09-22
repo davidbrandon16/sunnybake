@@ -77,7 +77,7 @@ func (reportCon ReportCon) Generate(ctx *gin.Context){
 					xlsx.SetCellValue("Sheet1", fmt.Sprintf("F%d",row),payment.BankName )
 					xlsx.SetCellValue("Sheet1", fmt.Sprintf("G%d",row),payment.AccountName )
 					xlsx.SetCellValue("Sheet1", fmt.Sprintf("H%d",row),payment.Date )
-					xlsx.SetCellValue("Sheet1", fmt.Sprintf("I%d",row),fmt.Sprintf("%f",payment.Price) )
+					xlsx.SetCellValue("Sheet1", fmt.Sprintf("I%d",row),fmt.Sprintf("%.2f",payment.Price) )
 				}
 				row++
 			}
