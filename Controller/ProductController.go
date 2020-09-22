@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"sunnybake/Model"
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -24,7 +25,7 @@ func (productController ProductControl) Insert(ctx *gin.Context) {
 	var product Model.Product;
 	product.Name = ctx.PostForm("name")
 	product.Name = strings.Trim(product.Name, " ")
-	product.Price = ctx.PostForm("price")
+	product.Price,_ = strconv.ParseFloat(ctx.PostForm("price"),64)
 	product.Description = ctx.PostForm("description")
 	file, _ := ctx.FormFile("photo")
 
@@ -86,7 +87,8 @@ func (productControl ProductControl) Update(ctx *gin.Context) {
 		db.Get(&product, "SELECT * FROM products WHERE id=$1", id)
 		product.Name = ctx.PostForm("name")
 		product.Name = strings.Trim(product.Name, " ")
-		product.Price = ctx.PostForm("price")
+		price,_ := strconv.ParseFloat(ctx.PostForm("price"),64 )
+		product.Price = price
 		product.Description = ctx.PostForm("description")
 		file, _ := ctx.FormFile("photo")
 		//fmt.Println(file.Filename)

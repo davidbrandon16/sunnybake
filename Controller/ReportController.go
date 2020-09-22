@@ -58,9 +58,9 @@ func (reportCon ReportCon) Generate(ctx *gin.Context){
 			for _, transactionHeader := range transactionHeaders{
 				xlsx.SetCellValue("Sheet1", fmt.Sprintf("A%d",row), transactionHeader.OrderDate)
 				xlsx.SetCellValue("Sheet1", fmt.Sprintf("B%d",row), transactionHeader.CustomerName)
-				xlsx.SetCellValue("Sheet1", fmt.Sprintf("C%d",row), transactionHeader.Price)
-				xlsx.SetCellValue("Sheet1", fmt.Sprintf("D%d",row), transactionHeader.DeliveryCost)
-				xlsx.SetCellValue("Sheet1", fmt.Sprintf("E%d",row), transactionHeader.Discount)
+				xlsx.SetCellValue("Sheet1", fmt.Sprintf("C%d",row), fmt.Sprintf("%.2f",transactionHeader.Price))
+				xlsx.SetCellValue("Sheet1", fmt.Sprintf("D%d",row), fmt.Sprintf("%.2f",transactionHeader.DeliveryCost))
+				xlsx.SetCellValue("Sheet1", fmt.Sprintf("E%d",row), fmt.Sprintf("%.2f",transactionHeader.Discount))
 				var transactionDetails []Model.TransactionDetail
 				err = db.Select(&transactionDetails, "SELECT * FROM transactiondetail WHERE transaction_header_id = $1", transactionHeader.Id)
 				if err != nil {
@@ -77,7 +77,7 @@ func (reportCon ReportCon) Generate(ctx *gin.Context){
 					xlsx.SetCellValue("Sheet1", fmt.Sprintf("F%d",row),payment.BankName )
 					xlsx.SetCellValue("Sheet1", fmt.Sprintf("G%d",row),payment.AccountName )
 					xlsx.SetCellValue("Sheet1", fmt.Sprintf("H%d",row),payment.Date )
-					xlsx.SetCellValue("Sheet1", fmt.Sprintf("I%d",row),payment.Price )
+					xlsx.SetCellValue("Sheet1", fmt.Sprintf("I%d",row),fmt.Sprintf("%f",payment.Price) )
 				}
 				row++
 			}

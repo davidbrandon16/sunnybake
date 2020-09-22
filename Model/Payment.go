@@ -8,5 +8,5 @@ type Payment struct {
 	AccountNumber string
 	AccountName string
 	Date string
-	Price string
+	Price float64
 }

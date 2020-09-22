@@ -57,9 +57,9 @@ func (transaction TransactionCon) Insert(ctx *gin.Context) {
 	transactionHeader.CustomerName = customer_name
 	transactionHeader.CustomerAddress = address
 	transactionHeader.OrderDate = order_date
-	transactionHeader.Discount = discount
-	transactionHeader.Price = price
-	transactionHeader.DeliveryCost = delivery_cost
+	transactionHeader.Discount,_ = strconv.ParseFloat(discount,64)
+	transactionHeader.Price,_ = strconv.ParseFloat(price,64)
+	transactionHeader.DeliveryCost,_ = strconv.ParseFloat(delivery_cost,64)
 	transactionHeader.SendDateTime = ""
 	transactionHeader.PhoneNumber = phoneNumber
 	transactionHeader.Delivery = deliveryType
@@ -182,8 +182,8 @@ func (transactionCon TransactionCon) InsertPayment(ctx *gin.Context) {
 				if (err != nil) {
 					fmt.Println(err.Error())
 				} else {
-					subPrice ,_:=strconv.Atoi(product.Price)
-					subPrice = subPrice * transactionDetail.Qty
+					subPrice:= product.Price
+					subPrice = subPrice * float64(transactionDetail.Qty)
 					transaction := map[string]interface{}{
 						"transactionDetail": transactionDetail,
 						"product":           product,
@@ -235,7 +235,7 @@ func (transactionCon TransactionCon) Update(ctx *gin.Context){
 		var ps []struct {
 			Id int
 			Name string
-			Price string
+			Price float64
 			Url string
 			Description string
 			Qty string
@@ -245,7 +245,7 @@ func (transactionCon TransactionCon) Update(ctx *gin.Context){
 			var p struct {
 				Id int
 				Name string
-				Price string
+				Price float64
 				Url string
 				Description string
 				Qty string
@@ -291,9 +291,9 @@ func (transactionCon TransactionCon) UpdateData(ctx *gin.Context){
 	transactionHeader.CustomerName = customer_name
 	transactionHeader.CustomerAddress = address
 	transactionHeader.OrderDate = order_date
-	transactionHeader.Discount = discount
-	transactionHeader.Price = price
-	transactionHeader.DeliveryCost = delivery_cost
+	transactionHeader.Discount,_ = strconv.ParseFloat(discount,64)
+	transactionHeader.Price,_ = strconv.ParseFloat(price,64)
+	transactionHeader.DeliveryCost,_ = strconv.ParseFloat(delivery_cost,64)
 	transactionHeader.SendDateTime = ""
 	transactionHeader.PhoneNumber = phoneNumber
 	transactionHeader.Delivery = deliveryType
@@ -377,9 +377,9 @@ func sendEmail(th Model.TransactionHeader, ts []map[string]interface{} ,qty int)
 		transactionHeader: th,
 		transactions:  ts,
 	}*/
-	price ,_:= strconv.Atoi(th.Price)
-	deliveryCost ,_:= strconv.Atoi(th.DeliveryCost)
-	discount,_ := strconv.Atoi(th.Discount)
+	price :=  th.Price
+	deliveryCost :=  th.DeliveryCost
+	discount:=  th.Discount
 	totalPrice := price + deliveryCost- discount
 	templateData:= gin.H{
 		"transactionHeader":th,
