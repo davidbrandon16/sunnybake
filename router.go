@@ -130,6 +130,7 @@ func main() {
 	report.Use(AuthMiddleware())
 	{
 		report.GET("/",Controller.ReportController.View)
+		report.POST("/generate",Controller.ReportController.Generate)
 	}
 
 	port := os.Getenv("PORT")
