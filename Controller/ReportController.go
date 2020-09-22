@@ -31,10 +31,11 @@ func (reportCon ReportCon) Generate(ctx *gin.Context){
 	xlsx.SetCellValue("Sheet1", "C1", "Price")
 	xlsx.SetCellValue("Sheet1", "D1", "Delivery Cost")
 	xlsx.SetCellValue("Sheet1", "E1", "Discount")
-	xlsx.SetCellValue("Sheet1", "F1", "Payment Bank")
-	xlsx.SetCellValue("Sheet1", "G1", "Payment Account Name")
-	xlsx.SetCellValue("Sheet1", "H1", "Payment Date")
-	xlsx.SetCellValue("Sheet1", "I1", "Payment Price")
+	xlsx.SetCellValue("Sheet1", "F1", "Courier")
+	xlsx.SetCellValue("Sheet1", "G1", "Payment Bank")
+	xlsx.SetCellValue("Sheet1", "H1", "Payment Account Name")
+	xlsx.SetCellValue("Sheet1", "I1", "Payment Date")
+	xlsx.SetCellValue("Sheet1", "J1", "Payment Price")
 	db, err := Connect()
 	var mapProduct map[int]int
 	mapProduct = make(map[int]int)
@@ -42,7 +43,7 @@ func (reportCon ReportCon) Generate(ctx *gin.Context){
 	if err != nil{
 		fmt.Println(err.Error())
 	}else {
-		var column int = 74
+		var column int = 75
 		for _,product := range products{
 			mapProduct[product.Id] = column
 			xlsx.SetCellValue("Sheet1", fmt.Sprintf("%c1",column), product.Name)
@@ -61,6 +62,7 @@ func (reportCon ReportCon) Generate(ctx *gin.Context){
 				xlsx.SetCellValue("Sheet1", fmt.Sprintf("C%d",row), fmt.Sprintf("%.2f",transactionHeader.Price))
 				xlsx.SetCellValue("Sheet1", fmt.Sprintf("D%d",row), fmt.Sprintf("%.2f",transactionHeader.DeliveryCost))
 				xlsx.SetCellValue("Sheet1", fmt.Sprintf("E%d",row), fmt.Sprintf("%.2f",transactionHeader.Discount))
+				xlsx.SetCellValue("Sheet1", fmt.Sprintf("F%d",row), transactionHeader.Delivery)
 				var transactionDetails []Model.TransactionDetail
 				err = db.Select(&transactionDetails, "SELECT * FROM transactiondetail WHERE transaction_header_id = $1", transactionHeader.Id)
 				if err != nil {
@@ -74,10 +76,10 @@ func (reportCon ReportCon) Generate(ctx *gin.Context){
 					if err != nil {
 						fmt.Println(err.Error())
 					}
-					xlsx.SetCellValue("Sheet1", fmt.Sprintf("F%d",row),payment.BankName )
-					xlsx.SetCellValue("Sheet1", fmt.Sprintf("G%d",row),payment.AccountName )
-					xlsx.SetCellValue("Sheet1", fmt.Sprintf("H%d",row),payment.Date )
-					xlsx.SetCellValue("Sheet1", fmt.Sprintf("I%d",row),fmt.Sprintf("%.2f",payment.Price) )
+					xlsx.SetCellValue("Sheet1", fmt.Sprintf("G%d",row),payment.BankName )
+					xlsx.SetCellValue("Sheet1", fmt.Sprintf("H%d",row),payment.AccountName )
+					xlsx.SetCellValue("Sheet1", fmt.Sprintf("I%d",row),payment.Date )
+					xlsx.SetCellValue("Sheet1", fmt.Sprintf("J%d",row),fmt.Sprintf("%.2f",payment.Price) )
 				}
 				row++
 			}
